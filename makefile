@@ -1,10 +1,8 @@
-CROSS = riscv32-unknown-elf
+CROSS = riscv64-unknown-elf
 CC    = $(CROSS)-gcc
-LD    = $(CROSS)-ld
-OBJDUMP = $(CROSS)-objdump
-OBJCOPY = $(CROSS)-objcopy
 
-CFLAGS = -O2 -Wall -nostdlib -nostartfiles -ffreestanding -march=rv32imac -mabi=ilp32
+CFLAGS = -O2 -Wall -nostdlib -nostartfiles -ffreestanding \
+         -march=rv64imac -mabi=lp64
 LDFLAGS = -T linker.ld
 
 SRCS = start.S kernel.c proc.c sync.c fs.c syscall.c uart.c \
@@ -14,17 +12,11 @@ OBJS := $(OBJS:.S=.o)
 
 all: os.elf
 
-os.elf: $(OBJS) linker.ld
+os.elf: $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) $(LDFLAGS) -o os.elf
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-%.o: %.S
-	$(CC) $(CFLAGS) -c $< -o $@
-
 run: os.elf
-	qemu-system-riscv32 -machine virt -nographic -kernel os.elf
+	qemu-system-riscv64 -machine virt -nographic -kernel os.elf
 
 clean:
 	rm -f $(OBJS) os.elf
