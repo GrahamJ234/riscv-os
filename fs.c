@@ -1,6 +1,7 @@
 // fs.c
 #include "fs.h"
 #include "sync.h"
+#include <string.h>
 
 static file_t files[MAX_FILES];
 static mutex_t fs_lock;
